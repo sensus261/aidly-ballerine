@@ -13,8 +13,6 @@ import { App } from './App';
 import { Head } from './Head';
 import './i18next';
 import './index.css';
-import { initializeMonitoring } from '@/initialize-monitoring/initialize-monitoring';
-import '../public/config.js?url';
 
 try {
   initializeMonitoring();
@@ -40,8 +38,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </HelmetProvider>
   </React.StrictMode>,
 );
-
-//@ts-ignore
-globalThis.env = globalThis.env || {
-  API_URL: import.meta.env.VITE_API_URL,
-};
