@@ -19,7 +19,7 @@ env:
 
 jobs:
   deploy-dev-pr-environment:
-    if: contains(github.event.pull_request.labels.*.name, 'deploy-pr')
+    if: contains(github.event.pull_request.labels.*.name, 'deploy-pr') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
       env_name: ${{ steps.env-name.outputs.PR_ENV_NAME }}
