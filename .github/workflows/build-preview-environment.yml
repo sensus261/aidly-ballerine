@@ -67,7 +67,7 @@ jobs:
       tag: ${{ needs.deploy-dev-pr-environment.outputs.env_name }}
 
   build-backoffice:
-    needs: deploy-dev-pr-environment
+    needs: [deploy-dev-pr-environment,build-wf-service]
     uses: ./.github/workflows/build-push-docker-images.yml
     with:
       registry: ghcr.io/${{ github.repository_owner }}
@@ -77,7 +77,7 @@ jobs:
       tag: ${{ needs.deploy-dev-pr-environment.outputs.env_name }}
 
   build-kyb:
-    needs: deploy-dev-pr-environment
+    needs: [deploy-dev-pr-environment,build-backoffice]
     uses: ./.github/workflows/build-push-docker-images.yml
     with:
       registry: ghcr.io/${{ github.repository_owner }}
@@ -87,7 +87,7 @@ jobs:
       tag: ${{ needs.deploy-dev-pr-environment.outputs.env_name }}
 
   build-dashboard:
-    needs: deploy-dev-pr-environment
+    needs: [deploy-dev-pr-environment,build-kyb]
     uses: ./.github/workflows/build-push-docker-images.yml
     with:
       registry: ghcr.io/${{ github.repository_owner }}

@@ -48,7 +48,7 @@ jobs:
         if: ${{ inputs.image_name }} == 'workflows-service'
         id: version
         run: |
-          TAG=$(git tag -l "*/$(echo ${{ inputs.image_name }}@)*" | sort -V -r | head -n 1)
+          TAG=$(git tag -l "$(echo workflow-service@)*" | sort -V -r | head -n 1)
           echo "tag=$TAG"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "TAG=$TAG" >> "$GITHUB_ENV"
