@@ -40,9 +40,6 @@ jobs:
           ref: ${{ inputs.ref }}
           fetch-depth: 1
           persist-credentials: false
-          sparse-checkout: |
-            ${{ inputs.context }}
-          sparse-checkout-cone-mode: true
 
       - name: Get tags
         run: git fetch --tags origin
