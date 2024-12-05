@@ -34,6 +34,21 @@ check_http_https() {
     fi
 }
 
+deploy_ballerine() {
+    local input=$1
+    echo "checking domain if suitable $input"
+    if [[ $input == *http://* && $input != *https://* ]]; then
+        cd deploy; sudo docker-compose -f docker-compose-build.yml up -d
+    elif [[ $input == *https://* && $input != *http://* ]]; then
+        cd deploy; sudo docker-compose -f docker-compose-build-https.yml up -d
+    elif [[ $input == *http://* && $input == *https://* ]]; then
+        echo "The string contains both 'http' and 'https'."
+        exit 1;
+    else
+        echo "The string contains neither 'http' nor 'https'."
+        exit 1;
+    fi
+}
 
 # Check if no arguments are provided
 if [ $# -eq 0 ]; then
@@ -42,6 +57,7 @@ fi
 
 
 install_docker_ubuntu(){
+    echo "Installing docker..."
     # Add Docker's official GPG key:
     sudo apt-get update
     sudo apt-get install ca-certificates curl
@@ -58,10 +74,12 @@ install_docker_ubuntu(){
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 }
 
+
 install_docker_macos(){
     echo "Install docker using the following docs"
     echo "https://docs.docker.com/desktop/setup/install/mac-install/"
 }
+
 
 check_os() {
     # Get the operating system name
@@ -95,6 +113,7 @@ check_os() {
 
 
 update_frontend_build_variables() {
+    echo "Updating env variables for frontend apps..."
     VITE_DOMAIN_NAME="$1"
     ## Get frontend application env files
     echo "Updating frontend Build Variables"
@@ -111,14 +130,17 @@ update_frontend_build_variables() {
 
 
 update_docker_compose(){
+    echo "Updating Docker Compose..."
+    WORKFLOW_SERVICE_DOMAIN=$1
     read -p "Enter the backoffice domain: " BACKOFFICE_DOMAIN
     check_http_https $BACKOFFICE_DOMAIN
     read -p "Enter the workflow dashboard domain: " WORKFLOW_DASHBOARD_DOMAIN
     check_http_https $WORKFLOW_DASHBOARD_DOMAIN
     read -p "Enter the kyb domain: " KYB_DOMAIN
     check_http_https $KYB_DOMAIN
+    create_caddy_file $BACKOFFICE_DOMAIN $WORKFLOW_DASHBOARD_DOMAIN $KYB_DOMAIN $WORKFLOW_SERVICE_DOMAIN
     echo "Updating docker-compose env variables"
-    env_files=$(find ./deploy -name "docker-compose-build.yml")
+    env_files=$(find ./deploy -name "docker-compose-build*")
     for i in $env_files;
         do
             echo "Updating env variables for KYB in $i"
@@ -131,6 +153,36 @@ update_docker_compose(){
             sed -i '' "s|http://localhost:5137|$BACKOFFICE_DOMAIN|g" $i
         done
 }
+
+
+create_caddy_file(){
+    echo "Creating Caddy file..."
+    BACKOFFICE_DOMAIN=$1
+    WORKFLOW_DASHBOARD_DOMAIN=$2
+    KYB_DOMAIN=$3
+    WORKFLOW_SERVICE_DOMAIN=$4
+    mkdir -p "$PWD/deploy/caddy"
+    output_file="$PWD/deploy/caddy/Caddyfile"
+    cat <<EOF > "$output_file"
+$BACKOFFICE_DOMAIN {
+  reverse_proxy backoffice:80
+}
+
+$WORKFLOW_SERVICE_DOMAIN {
+  reverse_proxy workflow-service:3000
+}
+
+$KYB_DOMAIN {
+  reverse_proxy kyb-app:80
+}
+
+$WORKFLOW_DASHBOARD_DOMAIN {
+  reverse_proxy workflows-dashboard:80
+}
+EOF
+
+}
+
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -145,7 +197,7 @@ while [[ $# -gt 0 ]]; do
                 echo "VITE DOMAIN: $VITE_DOMAIN_NAME"
                 check_http_https $VITE_DOMAIN_NAME
                 update_frontend_build_variables $VITE_DOMAIN_NAME
-                update_docker_compose
+                update_docker_compose $VITE_DOMAIN_NAME
                 shift 2
             else
                 echo "Error: --domain requires a domain name."
@@ -166,5 +218,5 @@ while [[ $# -gt 0 ]]; do
 done
 
 check_os
-# ## Bring docker-container up
-# cd deploy; sudo docker-compose -f docker-compose-build.yml up -d
+
+deploy_ballerine $VITE_DOMAIN_NAME
