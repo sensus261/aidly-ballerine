@@ -46,7 +46,7 @@ deploy_ballerine() {
         exit 1;
     else
         echo "The string contains neither 'http' nor 'https'."
-        exit 1;
+        cd deploy; sudo docker-compose -f docker-compose-build.yml up -d
     fi
 }
 
