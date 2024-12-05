@@ -96,6 +96,7 @@ check_os() {
                 else
                     echo "The host is running a Linux distribution but not Ubuntu."
                     echo "We do not support this Linux distribution"
+                    exit 1
                 fi
             else
                 echo "The host is running Linux but /etc/os-release is not available."
@@ -107,6 +108,7 @@ check_os() {
             ;;
         *)
             echo "The operating system is not recognized."
+            exit 1
             ;;
     esac
 }
@@ -123,9 +125,12 @@ update_frontend_build_variables() {
     for i in $env_files;
         do
             echo "Updating env variables of $i"
-            sed -i '' "s|http://localhost:3000|$VITE_DOMAIN_NAME|g" $i
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                sed -i '' "s|http://localhost:3000|$VITE_DOMAIN_NAME|g" $i
+            else
+                sed -i "s|http://localhost:3000|$VITE_DOMAIN_NAME|g" $i
+            fi
         done
-
 }
 
 
@@ -144,13 +149,15 @@ update_docker_compose(){
     for i in $env_files;
         do
             echo "Updating env variables for KYB in $i"
-            sed -i '' "s|http://localhost:5201|$KYB_DOMAIN|g" $i
-
-            echo "Updating env variables for Workflow Dashboard in $i"
-            sed -i '' "s|http://localhost:5200|$WORKFLOW_DASHBOARD_DOMAIN|g" $i
-
-            echo "Updating env variables for Backoffice in $i"
-            sed -i '' "s|http://localhost:5137|$BACKOFFICE_DOMAIN|g" $i
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                sed -i '' "s|http://localhost:3000|$VITE_DOMAIN_NAME|g" $i
+                sed -i '' "s|http://localhost:5201|$KYB_DOMAIN|g" $i
+                sed -i '' "s|http://localhost:5200|$WORKFLOW_DASHBOARD_DOMAIN|g" $i
+            else
+                sed -i "s|http://localhost:3000|$VITE_DOMAIN_NAME|g" $i
+                sed -i "s|http://localhost:5201|$KYB_DOMAIN|g" $i
+                sed -i "s|http://localhost:5200|$WORKFLOW_DASHBOARD_DOMAIN|g" $i
+            fi
         done
 }
 
