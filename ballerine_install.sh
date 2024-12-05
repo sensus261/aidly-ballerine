@@ -38,9 +38,17 @@ deploy_ballerine() {
     local input=$1
     echo "checking domain if suitable $input"
     if [[ $input == *http://* && $input != *https://* ]]; then
+      if [[ "$OSTYPE" == "darwin"* ]]; then
         cd deploy; sudo docker-compose -f docker-compose-build.yml up -d
+      else
+         cd deploy; sudo docker compose -f docker-compose-build.yml up -d
+      fi
     elif [[ $input == *https://* && $input != *http://* ]]; then
+       if [[ "$OSTYPE" == "darwin"* ]]; then
         cd deploy; sudo docker-compose -f docker-compose-build-https.yml up -d
+       else
+        cd deploy; sudo docker compose -f docker-compose-build-https.yml up -d
+       fi
     elif [[ $input == *http://* && $input == *https://* ]]; then
         echo "The string contains both 'http' and 'https'."
         exit 1;
@@ -71,7 +79,7 @@ install_docker_ubuntu(){
     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 }
 
 
