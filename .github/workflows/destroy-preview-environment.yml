@@ -18,7 +18,12 @@ env:
 
 jobs:
   deploy-dev-pr-environment:
-    if: contains(github.event.pull_request.labels.*.name, 'deploy-pr') || github.event_name == 'workflow_dispatch'
+    if: |
+      (github.event_name == 'pull_request' && github.event.action == 'unlabeled' && github.event.label.name == 'deploy-pr') 
+      ||
+      (github.event_name == 'pull_request' && github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, 'deploy-pr'))
+      ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
       env_name: ${{ steps.env-name.outputs.PR_ENV_NAME }}
