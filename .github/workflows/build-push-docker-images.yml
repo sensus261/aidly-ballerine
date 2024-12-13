@@ -23,6 +23,10 @@ on:
         required: true
         description: "Tag name of the Preview Image"
         type: string
+      file:
+        required: true
+        description: "File name for the Preview Image"
+        type: string
 
 permissions:
   id-token: write
@@ -116,6 +120,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ${{ steps.docker_meta.outputs.tags }}
+          file: ${{ inputs.file }}
           build-args: |
             ${{ inputs.image_name == 'workflows-service' && format('"RELEASE={0}"\n"SHORT_SHA={1}"', steps.version.outputs.tag, steps.version.outputs.sha_short) || '' }}
 
