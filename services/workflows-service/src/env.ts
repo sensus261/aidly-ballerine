@@ -95,6 +95,26 @@ export const serverEnvSchema = {
   IN_MEMORIES_SECRET_ACQUIRER_ID: z.string().optional(),
   IN_MEMORIES_SECRET_PRIVATE_KEY: z.string().optional(),
   IN_MEMORIES_SECRET_CONSUMER_KEY: z.string().optional(),
+  SUPABASE_TELEMETRY_ENABLED: z
+    .enum(['true', 'false', ''])
+    .default('true')
+    .nullable()
+    .optional()
+    .transform(value => value === 'true' || value === null)
+    .describe('Enable or disable telemetry'),
+  TELEMETRY_SUPABASE_URL: z
+    .string()
+    .url()
+    .optional()
+    .default('https://lrwqumfbfgajpfnupayx.supabase.co')
+    .describe('Supabase URL for telemetry'),
+  TELEMETRY_SUPABASE_API_KEY: z
+    .string()
+    .optional()
+    .default(
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxyd3F1bWZiZmdhanBmbnVwYXl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTUyNTU3NDMsImV4cCI6MjAzMDgzMTc0M30.EJWCMJhnBvG9_BQWw6wy3dT0GrwR3S41w2Z92R80BVI',
+    )
+    .describe('Supabase API key for telemetry'),
 };
 
 if (!process.env['ENVIRONMENT_NAME'] || process.env['ENVIRONMENT_NAME'] === 'local') {
