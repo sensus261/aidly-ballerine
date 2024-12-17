@@ -2,6 +2,8 @@ FROM node:18.17.1-bullseye-slim as dev
 
 WORKDIR /app
 
+RUN apt update -y && apt install xdg-utils -y
+
 COPY ./package.json .
 
 RUN npm install --legacy-peer-deps
