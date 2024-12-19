@@ -6,6 +6,7 @@ import {
   fetchLatestBusinessReport,
 } from '@/domains/business-reports/fetchers';
 import { MerchantReportType } from '@/domains/business-reports/constants';
+import { RISK_LEVELS } from '@/pages/MerchantMonitoring/hooks/useMerchantMonitoringLogic/useMerchantMonitoringLogic';
 
 export const businessReportsQueryKey = createQueryKeys('business-reports', {
   list: ({
@@ -21,6 +22,7 @@ export const businessReportsQueryKey = createQueryKeys('business-reports', {
     pageSize: number;
     sortBy: string;
     sortDir: string;
+    riskLevel: Array<(typeof RISK_LEVELS)[number]>;
   }) => ({
     queryKey: [{ page, pageSize, sortBy, sortDir, ...params }],
     queryFn: () => {

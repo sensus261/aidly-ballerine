@@ -2,7 +2,10 @@ import { BaseSearchSchema } from '@/common/hooks/useSearchParamsByEntity/validat
 import { z } from 'zod';
 import { TBusinessReport } from '@/domains/business-reports/fetchers';
 import { BooleanishRecordSchema } from '@ballerine/ui';
-import { REPORT_TYPE_TO_DISPLAY_TEXT } from './hooks/useMerchantMonitoringLogic/useMerchantMonitoringLogic';
+import {
+  REPORT_TYPE_TO_DISPLAY_TEXT,
+  RISK_LEVELS,
+} from './hooks/useMerchantMonitoringLogic/useMerchantMonitoringLogic';
 
 export const getMerchantMonitoringSearchSchema = () =>
   BaseSearchSchema.extend({
@@ -35,4 +38,14 @@ export const getMerchantMonitoringSearchSchema = () =>
       ])
       .catch('All'),
     selected: BooleanishRecordSchema.optional(),
+    riskLevel: z
+      .array(
+        z.enum(
+          RISK_LEVELS.map(riskLevel => riskLevel.toLowerCase()) as [
+            (typeof RISK_LEVELS)[number],
+            ...Array<(typeof RISK_LEVELS)[number]>,
+          ],
+        ),
+      )
+      .optional(),
   });

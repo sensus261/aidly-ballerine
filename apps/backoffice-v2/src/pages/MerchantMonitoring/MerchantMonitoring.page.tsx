@@ -21,7 +21,7 @@ import { Tooltip } from '@/common/components/atoms/Tooltip/Tooltip';
 import { TooltipTrigger } from '@/common/components/atoms/Tooltip/Tooltip.Trigger';
 import { TooltipContent } from '@/common/components/atoms/Tooltip/Tooltip.Content';
 import { t } from 'i18next';
-import { titleCase } from 'string-ts';
+import { MultiSelect } from '@/common/components/atoms/MultiSelect/MultiSelect';
 
 export const MerchantMonitoring: FunctionComponent = () => {
   const {
@@ -42,6 +42,9 @@ export const MerchantMonitoring: FunctionComponent = () => {
     reportType,
     onReportTypeChange,
     REPORT_TYPE_TO_DISPLAY_TEXT,
+    RISK_LEVEL_FILTERS,
+    onRiskLevelChange,
+    onClearSelect,
   } = useMerchantMonitoringLogic();
 
   return (
@@ -123,6 +126,19 @@ export const MerchantMonitoring: FunctionComponent = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <div className={`flex gap-2`}>
+          {RISK_LEVEL_FILTERS.map(({ title, options }) => (
+            <MultiSelect
+              key={title}
+              title={title}
+              selectedValues={[]}
+              onSelect={onRiskLevelChange}
+              onClearSelect={onClearSelect}
+              options={options}
+            />
+          ))}
+        </div>
       </div>
       <div className="flex flex-1 flex-col gap-6 overflow-auto">
         {isNonEmptyArray(businessReports) && <MerchantMonitoringTable data={businessReports} />}
