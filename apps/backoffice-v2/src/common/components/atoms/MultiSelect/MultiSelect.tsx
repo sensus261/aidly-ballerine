@@ -39,13 +39,11 @@ export const MultiSelect = <
   },
 >({
   title,
-  selectedValues,
+  selectedValues: selected,
   onSelect,
   onClearSelect,
   options,
 }: IMultiSelectProps<TOption>) => {
-  const [selected, setSelected] = useState(selectedValues);
-
   const onSelectChange = useCallback(
     (value: TOption['value']) => {
       const isSelected = selected.some(selectedValue => selectedValue === value);
@@ -53,7 +51,6 @@ export const MultiSelect = <
         ? selected.filter(selectedValue => selectedValue !== value)
         : [...selected, value];
 
-      setSelected(nextSelected);
       onSelect(nextSelected);
     },
     [onSelect, selected],
@@ -125,13 +122,7 @@ export const MultiSelect = <
               <>
                 <CommandSeparator />
                 <CommandGroup>
-                  <CommandItem
-                    onSelect={() => {
-                      onClearSelect();
-                      setSelected([]);
-                    }}
-                    className="justify-center text-center"
-                  >
+                  <CommandItem onSelect={onClearSelect} className="justify-center text-center">
                     Clear filters
                   </CommandItem>
                 </CommandGroup>

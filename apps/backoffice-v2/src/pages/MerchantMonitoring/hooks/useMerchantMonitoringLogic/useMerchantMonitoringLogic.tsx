@@ -24,9 +24,23 @@ export const RISK_LEVELS = ['Critical', 'High', 'Medium', 'Low'] as const;
 const RISK_LEVEL_FILTERS = [
   {
     title: 'Risk Level',
+    accessor: 'riskLevel',
     options: RISK_LEVELS.map(riskLevel => ({
       label: riskLevel,
       value: riskLevel.toLowerCase(),
+    })),
+  },
+];
+
+export const STATUS_OPTIONS = ['In Progress', 'Quality Control', 'Manual Review'] as const;
+
+const STATUS_LEVEL_FILTERS = [
+  {
+    title: 'Status',
+    accessor: 'status',
+    options: STATUS_OPTIONS.map(status => ({
+      label: status,
+      value: status.toLowerCase(),
     })),
   },
 ];
@@ -38,7 +52,7 @@ export const useMerchantMonitoringLogic = () => {
   const MerchantMonitoringSearchSchema = getMerchantMonitoringSearchSchema();
 
   const [
-    { page, pageSize, sortBy, sortDir, search: searchParamValue, reportType, riskLevel },
+    { page, pageSize, sortBy, sortDir, search: searchParamValue, reportType, riskLevel, status },
     setSearchParams,
   ] = useZodSearchParams(MerchantMonitoringSearchSchema);
 
@@ -59,26 +73,32 @@ export const useMerchantMonitoringLogic = () => {
     sortBy,
     sortDir,
     riskLevel: riskLevel ?? [],
+    status: status ?? [],
   });
 
   const onReportTypeChange = (reportType: keyof typeof REPORT_TYPE_TO_DISPLAY_TEXT) => {
     setSearchParams({ reportType: REPORT_TYPE_TO_DISPLAY_TEXT[reportType] });
   };
 
-  const onRiskLevelChange = useCallback(
-    (selected: unknown[]) => {
-      const selectedRiskLevels = selected as Array<(typeof RISK_LEVELS)[number]>;
-
+  const handleFilterChange = useCallback(
+    (filterKey: string) => (selected: unknown) => {
       setSearchParams({
-        riskLevel: selectedRiskLevels,
+        [filterKey]: Array.isArray(selected) ? selected : [selected],
+        page: '1',
       });
     },
     [setSearchParams],
   );
 
-  const onClearSelect = useCallback(() => {
-    setSearchParams({ riskLevel: [] });
-  }, [setSearchParams]);
+  const handleFilterClear = useCallback(
+    (filterKey: string) => () => {
+      setSearchParams({
+        [filterKey]: [],
+        page: '1',
+      });
+    },
+    [setSearchParams],
+  );
 
   const { onPaginate, onPrevPage, onNextPage, onLastPage, isLastPage } = usePagination({
     totalPages: data?.totalPages ?? 0,
@@ -104,7 +124,10 @@ export const useMerchantMonitoringLogic = () => {
     onReportTypeChange,
     REPORT_TYPE_TO_DISPLAY_TEXT,
     RISK_LEVEL_FILTERS,
-    onRiskLevelChange,
-    onClearSelect,
+    STATUS_LEVEL_FILTERS,
+    handleFilterChange,
+    handleFilterClear,
+    riskLevel,
+    status,
   };
 };

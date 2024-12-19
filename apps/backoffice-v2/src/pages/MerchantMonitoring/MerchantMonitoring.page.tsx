@@ -43,8 +43,11 @@ export const MerchantMonitoring: FunctionComponent = () => {
     onReportTypeChange,
     REPORT_TYPE_TO_DISPLAY_TEXT,
     RISK_LEVEL_FILTERS,
-    onRiskLevelChange,
-    onClearSelect,
+    STATUS_LEVEL_FILTERS,
+    handleFilterChange,
+    handleFilterClear,
+    riskLevel,
+    status,
   } = useMerchantMonitoringLogic();
 
   return (
@@ -127,18 +130,26 @@ export const MerchantMonitoring: FunctionComponent = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className={`flex gap-2`}>
-          {RISK_LEVEL_FILTERS.map(({ title, options }) => (
-            <MultiSelect
-              key={title}
-              title={title}
-              selectedValues={[]}
-              onSelect={onRiskLevelChange}
-              onClearSelect={onClearSelect}
-              options={options}
-            />
-          ))}
-        </div>
+        {RISK_LEVEL_FILTERS.map(({ title, accessor, options }) => (
+          <MultiSelect
+            key={title}
+            title={title}
+            selectedValues={riskLevel ?? []}
+            onSelect={handleFilterChange(accessor)}
+            onClearSelect={handleFilterClear(accessor)}
+            options={options}
+          />
+        ))}
+        {STATUS_LEVEL_FILTERS.map(({ title, accessor, options }) => (
+          <MultiSelect
+            key={title}
+            title={title}
+            selectedValues={status ?? []}
+            onSelect={handleFilterChange(accessor)}
+            onClearSelect={handleFilterClear(accessor)}
+            options={options}
+          />
+        ))}
       </div>
       <div className="flex flex-1 flex-col gap-6 overflow-auto">
         {isNonEmptyArray(businessReports) && <MerchantMonitoringTable data={businessReports} />}

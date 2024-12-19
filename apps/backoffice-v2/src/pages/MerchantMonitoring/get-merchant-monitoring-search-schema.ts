@@ -5,6 +5,7 @@ import { BooleanishRecordSchema } from '@ballerine/ui';
 import {
   REPORT_TYPE_TO_DISPLAY_TEXT,
   RISK_LEVELS,
+  STATUS_OPTIONS,
 } from './hooks/useMerchantMonitoringLogic/useMerchantMonitoringLogic';
 
 export const getMerchantMonitoringSearchSchema = () =>
@@ -47,5 +48,15 @@ export const getMerchantMonitoringSearchSchema = () =>
           ],
         ),
       )
-      .optional(),
+      .catch([]),
+    status: z
+      .array(
+        z.enum(
+          STATUS_OPTIONS.map(status => status.toLowerCase()) as [
+            (typeof STATUS_OPTIONS)[number],
+            ...Array<(typeof STATUS_OPTIONS)[number]>,
+          ],
+        ),
+      )
+      .catch([]),
   });
