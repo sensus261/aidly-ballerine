@@ -88,7 +88,7 @@ export const fetchBusinessReports = async ({
   reportType,
   ...params
 }: {
-  reportType: MerchantReportType;
+  reportType: MerchantReportType | 'All';
   page: {
     number: number;
     size: number;
@@ -98,7 +98,7 @@ export const fetchBusinessReports = async ({
   const queryParams = qs.stringify(
     {
       ...params,
-      type: reportType,
+      ...(reportType !== 'All' && { type: reportType }),
     },
     { encode: false },
   );

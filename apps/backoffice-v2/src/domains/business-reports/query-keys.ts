@@ -15,7 +15,7 @@ export const businessReportsQueryKey = createQueryKeys('business-reports', {
     sortDir,
     ...params
   }: {
-    reportType: MerchantReportType;
+    reportType: MerchantReportType | 'All';
     search: string;
     page: number;
     pageSize: number;

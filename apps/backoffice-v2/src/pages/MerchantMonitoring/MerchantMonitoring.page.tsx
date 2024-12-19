@@ -5,15 +5,23 @@ import { useMerchantMonitoringLogic } from '@/pages/MerchantMonitoring/hooks/use
 import { NoBusinessReports } from '@/pages/MerchantMonitoring/components/NoBusinessReports/NoBusinessReports';
 import { MerchantMonitoringTable } from '@/pages/MerchantMonitoring/components/MerchantMonitoringTable/MerchantMonitoringTable';
 import { buttonVariants } from '@/common/components/atoms/Button/Button';
-import { Plus, Table2 } from 'lucide-react';
+import { Plus, SlidersHorizontal, Table2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Search } from '@/common/components/molecules/Search';
-import { Skeleton } from '@ballerine/ui';
+import {
+  Button,
+  DropdownMenuTrigger,
+  DropdownMenu,
+  Skeleton,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from '@ballerine/ui';
 import { TooltipProvider } from '@/common/components/atoms/Tooltip/Tooltip.Provider';
 import { Tooltip } from '@/common/components/atoms/Tooltip/Tooltip';
 import { TooltipTrigger } from '@/common/components/atoms/Tooltip/Tooltip.Trigger';
 import { TooltipContent } from '@/common/components/atoms/Tooltip/Tooltip.Content';
 import { t } from 'i18next';
+import { titleCase } from 'string-ts';
 
 export const MerchantMonitoring: FunctionComponent = () => {
   const {
@@ -31,6 +39,9 @@ export const MerchantMonitoring: FunctionComponent = () => {
     locale,
     createBusinessReport,
     createBusinessReportBatch,
+    reportType,
+    onReportTypeChange,
+    REPORT_TYPE_TO_DISPLAY_TEXT,
   } = useMerchantMonitoringLogic();
 
   return (
@@ -90,8 +101,28 @@ export const MerchantMonitoring: FunctionComponent = () => {
           </TooltipProvider>
         </div>
       </div>
-      <div className={`flex`}>
+      <div className={`flex gap-2`}>
         <Search value={search} onChange={onSearch} />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <SlidersHorizontal size={18} className="mr-2" /> Type
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {Object.entries(REPORT_TYPE_TO_DISPLAY_TEXT).map(([type, displayText]) => (
+              <DropdownMenuCheckboxItem
+                key={displayText}
+                checked={reportType === displayText}
+                onCheckedChange={() =>
+                  onReportTypeChange(type as keyof typeof REPORT_TYPE_TO_DISPLAY_TEXT)
+                }
+              >
+                {displayText}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="flex flex-1 flex-col gap-6 overflow-auto">
         {isNonEmptyArray(businessReports) && <MerchantMonitoringTable data={businessReports} />}

@@ -12,7 +12,7 @@ export const useBusinessReportsQuery = ({
   sortBy,
   sortDir,
 }: {
-  reportType: MerchantReportType;
+  reportType: MerchantReportType | 'All';
   search: string;
   page: number;
   pageSize: number;
