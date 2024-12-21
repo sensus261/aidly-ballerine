@@ -13,5 +13,45 @@
     "**/data-migrations": false
   },
   "search.followSymlinks": true,
-  "search.useIgnoreFiles": false
+  "search.useIgnoreFiles": false,
+
+  // RESTORE TERMINALS
+  "restoreTerminals.runOnStartup": true,
+
+  "restoreTerminals.terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "GIT",
+          "commands": [],
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "START PROJECT",
+          "commands": ["pnpm docker-compose:up"],
+          "shouldRunCommands": false
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "STOP & DELETE PROJECT",
+          "commands": ["pnpm docker-compose:down"],
+          "shouldRunCommands": false
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "CUSTOM TERMINAL",
+          "commands": []
+        }
+      ]
+    },
+  ]
 }

@@ -52,6 +52,8 @@ From account-opening (KYC, KYB), underwriting, and transaction monitoring, using
 - [**Plugin System**](#modules) - Integrates with 3rd-party vendors, APIs, and databases.  [see plugins](#modules).
 - **No-Code Builder** - Leverage various rule types to ensure user compliance with your risk policy - 🚧 WIP.
 
+<br>
+
 ## Why Open Source?
 We believe in enabling companies to manage user  identity  and risk according to their unique  and evolving requirements. Ballerine empowers you to  create decisioning processes that are  right  for you. It is flexible, future-proof, easy to implement, secure, and supported by a robust community.
 
@@ -61,6 +63,8 @@ We believe in enabling companies to manage user  identity  and risk according to
 - **Global Orchestration:** Add/change vendors and data sources to cater to users from multiple countries.
 - **Cost Reduction:** Retain control over vendor relationships, costs, and communication.
 - And More.
+
+<br>
 
 ## Try Ballerine Now
 
@@ -74,7 +78,10 @@ We believe in enabling companies to manage user  identity  and risk according to
 **Parts of the system you might look for but are not in THIS demo:**
 - Our Rule Engine is still under construction and will soon be released.
 
-**Getting started**
+<br>
+<br>
+
+## Getting started
 To set up a local environment, follow these steps:
 1. #### Install prerequisites:
    - Node.js ([Install NVM](https://github.com/nvm-sh/nvm), then install node "nvm install --lts")
@@ -84,7 +91,7 @@ To set up a local environment, follow these steps:
 2. #### Clone and install the project:
   1. Clone the project:
    ```sh
-   git clone https://github.com/ballerine-io/ballerine.git
+   git clone https://github.com/sensus261/aidly-ballerine.git
    ```
   2. Install npm dependencies:
    ```sh
@@ -94,15 +101,34 @@ To set up a local environment, follow these steps:
    ```sh
    pnpm monorepo:init
    ```
-3. #### Run an example
+  4. Start docker containers:
+
+   ```sh
+   pnpm docker-compose:up
+
+   # HONORABLE NOTES:
+   #   Sometimes the building step of the images fail. Please retry them
+   ```
+   5. Stop & remove docker containers:
+
+   ```sh
+   pnpm docker-compose:down
+   ```
+
+3. #### (OPTIONAL) Run an example:
+
    * KYB
    ```sh
    pnpm kyb-manual-review-example
    ```
+   
    * KYC
     ```sh
    pnpm kyc-manual-review-example
    ```
+
+   ###### TIP: Make sure that the docker containers are not already running. These commands will start their own version of the project for demonstration purposes
+
 Once the process is complete,  _2 tabs_   will open in your browser:
 1. Document Collection Flow:
    - KYB: [http://localhost:5201/](http://localhost:5201/)
@@ -111,6 +137,8 @@ Once the process is complete,  _2 tabs_   will open in your browser:
    _(It's recommended to position both tabs side-by-side)_
 
 > **Note:** If the tabs don't open automatically, use the links above.
+
+<br>
 
 ### Flow Instructions
 
